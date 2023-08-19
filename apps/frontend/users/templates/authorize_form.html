@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- Подключение стилей UIkit -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.16.24/dist/css/uikit.min.css"/>
+	<title>Подтверждение</title>
+</head>
+
+<body>
+<div class="uk-container uk-height-viewport uk-flex uk-flex-center uk-flex-middle">
+	<div class="uk-card uk-card-small uk-card-default uk-card-body uk-width-2-3@m">
+		<div class="uk-card-badge uk-label">pre alpha</div>
+		<h3 class="uk-card-title">Подтверждение</h3>
+		<form class="uk-form-stacked" method="POST">
+			{% csrf_token %}
+			<div class="uk-margin">
+				<label
+						class="uk-form-label"
+						for="password"
+				>Одноразовый код
+				</label>
+				<input
+						class="uk-input"
+						type="password"
+						id="password"
+						name="password"
+						placeholder="Введите четырехзначный код"
+						value="{{ one_time_password }}"
+						required
+				>
+			</div>
+			<button
+					class="uk-button uk-button-primary"
+					type="submit"
+			>Подтвердить
+			</button>
+		</form>
+	</div>
+</div>
+</body>
+
+</html>

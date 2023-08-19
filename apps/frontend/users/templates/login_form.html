@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- Подключение стилей UIkit -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.16.24/dist/css/uikit.min.css"/>
+	<title>Логин/регистрация</title>
+</head>
+
+<body>
+<div class="uk-container uk-height-viewport uk-flex uk-flex-center uk-flex-middle">
+	<div class="uk-card uk-card-small uk-card-default uk-card-body uk-width-2-3@m">
+		<div class="uk-card-badge uk-label">pre alpha</div>
+		<h3 class="uk-card-title">Вход</h3>
+		<form class="uk-form-stacked" method="POST">
+			{% csrf_token %}
+			<div class="uk-margin">
+				<label
+						class="uk-form-label"
+						for="phone_number">Телефон
+				</label>
+				<input
+						class="uk-input"
+						type="text"
+						id="phone_number"
+						name="phone_number"
+						placeholder="Введите номер телефона в формате +7ХХХХХХХХХХ"
+						required
+				>
+			</div>
+			<button
+					class="uk-button uk-button-primary"
+					onclick="UIkit.notification(
+						{
+							message: '<span uk-icon=\'icon: check\'></span> Отправлен одноразовый код',
+							status: 'warning'
+						}
+					)"
+					type="submit"
+			>Войти
+			</button>
+		</form>
+	</div>
+</div>
+
+<!-- Подключение скриптов UIkit -->
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.16.24/dist/js/uikit.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.16.24/dist/js/uikit-icons.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+</body>
+
+</html>

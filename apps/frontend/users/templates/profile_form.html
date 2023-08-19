@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- Подключение стилей UIkit -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.16.24/dist/css/uikit.min.css"/>
+	<title>Профиль</title>
+</head>
+<header>
+	<div class="uk-flex uk-margin-top" uk-grid>
+		<div class="uk-flex uk-width-1-2">
+			<div class="uk-flex uk-flex-middle uk-margin-left">
+				<div class="uk-label uk-badge">pre alpha</div>
+			</div>
+		</div>
+		<div class="uk-flex uk-flex-right uk-width-1-2">
+			<div class="uk-flex uk-margin-right">
+				<form action="logout/" method="POST">
+					{% csrf_token %}
+					<button class="uk-button uk-button-primary">Выйти</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</header>
+<hr>
+<body>
+
+<div class="uk-container">
+	<div class="uk-flex uk-flex-center uk-grid-large" uk-grid>
+
+		<div class="uk-width-1-2">
+			<div>
+				<!-- Карточка с информацией профиля -->
+				<div class="uk-card uk-card-default">
+					<div class="uk-card-header">
+						<h3 class="uk-card-title">Здравствуйте, {{ user.first_name|default:user.phone_number }}!</h3>
+					</div>
+					<div class="uk-card-body">
+						<div> Номер телефона: {{ user.phone_number }}</div>
+						<div> Код приглашения: {{ user.invite_code }}</div>
+						<div> Приглашен: {{ user.invited_by_code|default:"Вы не погасили код приглашения" }}</div>
+					</div>
+					<div class="uk-card-footer">
+						<ul class="uk-list uk-list-disc uk-list-primary uk-list-collapse"> Приглашенные пользователи:
+							{% for invited_user in invited_users %}
+							<li> {{ invited_user }}</li>
+							{% endfor %}
+						</ul>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		<div class="uk-width-1-2 uk flex uk-flex-column">
+			<div>
+				<!-- Карточка с данными профиля для обновления -->
+				<div class="uk-card uk-card-default uk-card-body">
+					<form method="POST">
+						{% csrf_token %}
+						<div class="uk-margin">
+							<label class="uk-form-label" for="phone_number">Телефон</label>
+							<input class="uk-input" type="text" id="phone_number" value="{{ user.phone_number }}"
+								   disabled>
+						</div>
+						<div class="uk-margin">
+							<label class="uk-form-label" for="first_name">Имя</label>
+							<input class="uk-input" type="text" id="first_name" name="first_name" value="{{ user.first_name }}"
+							>
+						</div>
+						<div class="uk-margin">
+							<label class="uk-form-label" for="last_name">Фамилия</label>
+							<input class="uk-input" type="text" id="last_name" name="last_name" value="{{ user.last_name }}"
+							>
+						</div>
+						<div class="uk-margin">
+							<label class="uk-form-label" for="email">Email</label>
+							<input class="uk-input" type="email" id="email" name="email" value="{{ user.email }}"
+							>
+						</div>
+						<hr>
+						<button class="uk-button uk-button-primary" type="submit">Изменить</button>
+					</form>
+
+				</div>
+			</div>
+			<div>
+				<!-- Карточка для кода -->
+				<div class="uk-card uk-card-default uk-card-body uk-margin-top">
+					<form action="submit/" method="POST">
+						{% csrf_token %}
+						<!-- Если код не был введен -->
+						{% if not user.invited_by_code %}
+						<div class="uk-margin">
+							<label class="uk-form-label" for="code">Код приглашения</label>
+							{% if 'error' in request.session %}
+							<input class="uk-input uk-form-danger" type="text" aria-label="form-danger" id="error_code"
+								   name="invited_by_code">
+							{% else %}
+							<input class="uk-input" type="text" id="code" name="invited_by_code">
+							{% endif %}
+
+						</div>
+						<hr>
+						<button class="uk-button uk-button-primary" type="submit">Погасить код</button>
+
+						{% else %}
+						<!-- Если код был введен -->
+						<div class="uk-margin">
+							<label class="uk-form-label" for="code">Код приглашения</label>
+							<input class="uk-input" value="{{user.invited_by_code}}" disabled>
+						</div>
+						<hr>
+						<button class="uk-button uk-button-primary" disabled>Погасить код</button>
+
+						{% endif %}
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+
+</html>

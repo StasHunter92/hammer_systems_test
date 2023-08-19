@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  database:
+    image: postgres
+    container_name: hammer_systems_database
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: hammer_systems_postgres
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "user", "-d", "hammer_systems_postgres" ]
+      interval: 2s
+      timeout: 2s
+      retries: 5
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  migrate:
+    build: .
+    container_name: hammer_systems_migrate
+    command: >
+      sh -c "python manage.py makemigrations &&
+      python manage.py migrate"
+    depends_on:
+      database:
+        condition: service_healthy
+    env_file:
+      - .env
+
+  api:
+    build: .
+    container_name: hammer_systems_api
+    ports:
+      - "80:8000"
+    command: python manage.py runserver 0.0.0.0:8000
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    env_file:
+      - .env
+
+  adminer:
+    image: adminer
+    container_name: hammer_systems_adminer
+    ports:
+      - "8080:8080"
+
+volumes:
+  postgres_data:
